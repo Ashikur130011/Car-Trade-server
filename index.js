@@ -48,6 +48,17 @@ async function run() {
         res.json(result);
         console.log(result);
       })
+
+      // Delete car api
+      app.delete("/cars/:id", async (req, res) => {
+        const id = req.params.id;
+        console.log(id);
+        const query = { _id: ObjectId(id) };
+        const order = await orderCollection.deleteOne(query);
+        console.log(order);
+        res.send(order);
+      });
+
       //POST order API
       app.post("/orders", async (req, res) => {
         const cursor = req.body;
