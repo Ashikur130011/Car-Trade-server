@@ -40,11 +40,18 @@ async function run() {
         const singleCar = await carsCollection.findOne(query);
         res.send(singleCar);
       });
+
+      // post car api
+      app.post("/cars", async (req, res) => {
+        const cursor = req.body;
+        const result = await carsCollection.insertOne(cursor);
+        res.json(result);
+        console.log(result);
+      })
       //POST order API
       app.post("/orders", async (req, res) => {
         const cursor = req.body;
         const result = await orderCollection.insertOne(cursor);
-        console.log(result);
         res.json(result);
       });
       //GET order API
