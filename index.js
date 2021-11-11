@@ -29,9 +29,17 @@ async function run() {
         app.get('/cars', async (req, res) => {
             const cursor = carsCollection.find({});
             const cars = await cursor.toArray();
-            res.send(cars)
-            
-            
+            res.send(cars) 
+        })
+
+        //get single api
+        app.get('/cars/:id', async (req, res) => {
+          const id = req.params.id;
+          console.log(id);
+          const query = {_id: ObjectId(id)};
+          const singleCar = await carsCollection.findOne(query);
+          res.send(singleCar)
+          
         })
     }
     finally{
