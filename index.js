@@ -41,20 +41,21 @@ async function run() {
         res.send(singleCar);
       });
       //POST order API
-      app.post("/order", async (req, res) => {
+      app.post("/orders", async (req, res) => {
         const cursor = req.body;
         const result = await orderCollection.insertOne(cursor);
         console.log(result);
         res.json(result);
       });
       //GET order API
-      app.get("/order", async (req, res) => {
-        const order = await orderCollection.find({}).toArray();
+      app.get("/orders", async (req, res) => {
+        const cursor = orderCollection.find({});
+        const order = await cursor.toArray(); 
         res.json(order);
       });
 
       // GET order API BY QUERY
-      app.get("/order/:email", async (req, res) => {
+      app.get("/orders/:email", async (req, res) => {
         const email = req.params.email;
         const query = { Email: email };
         const order = await orderCollection.find(query).toArray();
@@ -71,25 +72,7 @@ async function run() {
         res.send(order);
       });
 
-      //Admin
-      app.put("/users/admin", async (req, res) => {
-        const user = req.body;
-        console.log("put", req.decodedEmail);
-        if (requester) {
-          const requestAccount = await usersCollection.findOne({
-            email: requester,
-          });
-          if (requestAccount.role === "admin") {
-            const filter = { email: user.email };
-            const updateDoc = { $set: { role: "admin" } };
-            const result = await usersCollection.updateOne(filter, updateDoc);
-            console.log(result);
-            res.json(result);
-          }
-        } else {
-          res.status(403).json({ message: "you do not have access" });
-        }
-      });
+      
     }
     finally{
         //await client.close()
