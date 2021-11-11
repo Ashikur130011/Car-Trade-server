@@ -50,11 +50,11 @@ async function run() {
       })
 
       // Delete car api
-      app.delete("/cars/id", async (req, res) => {
+      app.delete("/cars/:id", async (req, res) => {
         const id = req.params.id;
         console.log(id);
         const query = { _id: ObjectId(id) };
-        const order = await orderCollection.deleteOne(query);
+        const order = await carsCollection.deleteOne(query);
         console.log(order);
         res.send(order);
       });
