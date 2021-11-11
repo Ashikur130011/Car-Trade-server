@@ -19,28 +19,77 @@ const client = new MongoClient(uri, {
 
 async function run() {
     try{
-        await client.connect();
-        console.log('Database connected successfully');
-        const database = client.db('CarTrade');
-        const carsCollection = database.collection('cars')
-        
+      await client.connect();
+      console.log("Database connected successfully");
+      const database = client.db("CarTrade");
+      const carsCollection = database.collection("cars");
+      const orderCollection = database.collection('orders')
 
-        //get Cars api
-        app.get('/cars', async (req, res) => {
-            const cursor = carsCollection.find({});
-            const cars = await cursor.toArray();
-            res.send(cars) 
-        })
+      //get Cars api
+      app.get("/cars", async (req, res) => {
+        const cursor = carsCollection.find({});
+        const cars = await cursor.toArray();
+        res.send(cars);
+      });
 
-        //get single api
-        app.get('/cars/:id', async (req, res) => {
-          const id = req.params.id;
-          console.log(id);
-          const query = {_id: ObjectId(id)};
-          const singleCar = await carsCollection.findOne(query);
-          res.send(singleCar)
-          
-        })
+      //get single api
+      app.get("/cars/:id", async (req, res) => {
+        const id = req.params.id;
+        console.log(id);
+        const query = { _id: ObjectId(id) };
+        const singleCar = await carsCollection.findOne(query);
+        res.send(singleCar);
+      });
+      //POST order API
+      app.post("/order", async (req, res) => {
+        const cursor = req.body;
+        const result = await orderCollection.insertOne(cursor);
+        console.log(result);
+        res.json(result);
+      });
+      //GET order API
+      app.get("/order", async (req, res) => {
+        const order = await orderCollection.find({}).toArray();
+        res.json(order);
+      });
+
+      // GET order API BY QUERY
+      app.get("/order/:email", async (req, res) => {
+        const email = req.params.email;
+        const query = { Email: email };
+        const order = await orderCollection.find(query).toArray();
+        res.json(order);
+      });
+
+      //DELETE order API
+      app.delete("/orders/:id", async (req, res) => {
+        const id = req.params.id;
+        console.log(id);
+        const query = { _id: ObjectId(id) };
+        const order = await orderCollection.deleteOne(query);
+        console.log(order);
+        res.send(order);
+      });
+
+      //Admin
+      app.put("/users/admin", async (req, res) => {
+        const user = req.body;
+        console.log("put", req.decodedEmail);
+        if (requester) {
+          const requestAccount = await usersCollection.findOne({
+            email: requester,
+          });
+          if (requestAccount.role === "admin") {
+            const filter = { email: user.email };
+            const updateDoc = { $set: { role: "admin" } };
+            const result = await usersCollection.updateOne(filter, updateDoc);
+            console.log(result);
+            res.json(result);
+          }
+        } else {
+          res.status(403).json({ message: "you do not have access" });
+        }
+      });
     }
     finally{
         //await client.close()
