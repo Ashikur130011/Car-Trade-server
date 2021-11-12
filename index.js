@@ -24,7 +24,8 @@ async function run() {
       const database = client.db("CarTrade");
       const carsCollection = database.collection("cars");
       const orderCollection = database.collection("orders");
-      const usersCollection = database.collection("users")
+      const usersCollection = database.collection("users");
+      const commentCollection = database.collection("comments");
 
       //get Cars api
       app.get("/cars", async (req, res) => {
@@ -118,6 +119,14 @@ async function run() {
         const order = await orderCollection.deleteOne(query);
         console.log(order);
         res.send(order);
+      });
+
+      //POST COMMENT
+      app.post("/comments", async (req, res) => {
+        const cursor = req.body;
+        const request = await commentCollection.insertOne(cursor)
+        res.json(request)
+        console.log(request);
       });
     }
     finally{
