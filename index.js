@@ -23,7 +23,8 @@ async function run() {
       console.log("Database connected successfully");
       const database = client.db("CarTrade");
       const carsCollection = database.collection("cars");
-      const orderCollection = database.collection('orders')
+      const orderCollection = database.collection("orders");
+      const usersCollection = database.collection("users")
 
       //get Cars api
       app.get("/cars", async (req, res) => {
@@ -47,7 +48,7 @@ async function run() {
         const result = await carsCollection.insertOne(cursor);
         res.json(result);
         console.log(result);
-      })
+      });
 
       // Delete car api
       app.delete("/cars/:id", async (req, res) => {
@@ -59,16 +60,23 @@ async function run() {
         res.send(order);
       });
 
+      //POST USER DATA
+      app.post("/users", async (req, res) => {
+        const user = req.body;
+        const result = await usersCollection.insertOne(user);
+        res.json(result);
+      });
+
       //POST order API
       app.post("/orders", async (req, res) => {
         const cursor = req.body;
         const result = await orderCollection.insertOne(cursor);
         res.json(result);
       });
-      //GET order API
+      //GET All order API
       app.get("/orders", async (req, res) => {
         const cursor = orderCollection.find({});
-        const order = await cursor.toArray(); 
+        const order = await cursor.toArray();
         res.json(order);
       });
 
@@ -89,8 +97,6 @@ async function run() {
         console.log(order);
         res.send(order);
       });
-
-      
     }
     finally{
         //await client.close()
