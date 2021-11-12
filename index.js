@@ -128,6 +128,13 @@ async function run() {
         res.json(request)
         console.log(request);
       });
+
+      //GET COMMENT
+      app.get("/comments", async (req, res) => {
+        const cursor = commentCollection.find({});
+        const comment = await cursor.toArray();
+        res.json(comment);
+      });
     }
     finally{
         //await client.close()
