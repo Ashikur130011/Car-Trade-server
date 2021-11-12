@@ -75,7 +75,7 @@ async function run() {
         if (user?.role === "admin") {
           isAdmin = true;
         }
-        res.json({ admin: isAdmin })
+        res.json(isAdmin)
       });
       //put admin
       app.put('/users/admin', async (req, res) => {
