@@ -86,8 +86,7 @@ async function run() {
           const updateDoc = { $set: { role: "admin" } };
           const result = await usersCollection.updateOne(filter, updateDoc);
           console.log(result);
-          res.json(result);
-            
+          res.json(result);   
           
       });
       //POST order API
@@ -96,6 +95,16 @@ async function run() {
         const result = await orderCollection.insertOne(cursor);
         res.json(result);
       });
+
+      //Status Update
+      app.put('/orders/:id', async(req, res) => {
+        const id = req.params.id;
+        const user=req.body;
+        console.log(id,user);
+        const filter = {_id: ObjectId(id)};
+        const updateDoc = {$set: {status}}
+
+      })
       //GET All order API
       app.get("/orders", async (req, res) => {
         const cursor = orderCollection.find({});
