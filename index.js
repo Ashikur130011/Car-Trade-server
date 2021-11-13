@@ -102,7 +102,6 @@ async function run() {
         const user=req.body;
         console.log(id,user);
         const filter = {_id: ObjectId(id)};
-        const option = {upsert:true};
         const updateDoc = {$set: {status:user.getStatus}}
         const result = await orderCollection.updateOne(filter, option, updateDoc);
         res.json(result);
