@@ -100,12 +100,11 @@ async function run() {
       app.put('/orders/:id', async(req, res) => {
         const id = req.params.id;
         const user=req.body;
-        
+        //  console.log(user);
         const filter = {_id: ObjectId(id)};
         const updateDoc = {$set: {status:user.getStatus}}
         const result = await orderCollection.updateOne(filter, updateDoc);
-        console.log(result);
-        res.json(result);
+        res.json({ status: user.getStatus });
 
 
       })
